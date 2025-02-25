@@ -1,10 +1,18 @@
 # Use OpenJDK as base image
 FROM openjdk:17-jdk-slim
 
-# Install necessary GUI dependencies
-RUN apt-get update && apt-get install -y libx11-6 libxext6 libxrender1 libxtst6 libxi6
+# Install required dependencies for GUI applications
+RUN apt-get update && apt-get install -y \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    libxtst6 \
+    libxi6 \
+    libfreetype6 \
+    fontconfig \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
 # Copy the compiled JAR

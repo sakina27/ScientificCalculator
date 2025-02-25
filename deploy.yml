@@ -2,6 +2,9 @@
 - name: Deploy Scientific Calculator GUI
   hosts: localhost
   tasks:
+    - name: Allow Docker to access X11
+      shell: xhost +local:docker
+
     - name: Pull latest Docker image
       docker_image:
         name: "saki2726/scientific-calculator"
@@ -16,9 +19,9 @@
       ignore_errors: yes
 
     - name: Run Docker container with GUI support
-      shell: docker run -it -d \
-        -e DISPLAY=$DISPLAY \
-        -v /tmp/.X11-unix:/tmp/.X11-unix \
-        --name calculator \
-        saki2726/scientific-calculator
-
+      shell: |
+        docker run -it -d \
+          -e DISPLAY=$DISPLAY \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          --name calculator \
+          saki2726/scientific-calculator
