@@ -21,3 +21,6 @@
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         --name calculator \
         saki2726/scientific-calculator
+
+    - name: Start Scientific Calculator GUI
+      shell: docker exec -d calculator java -jar /app/app.jar
