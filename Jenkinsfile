@@ -19,6 +19,12 @@ pipeline {
             }
         }
 
+        stage('Test') {  // ✅ This ensures tests run in Jenkins
+            steps {
+                sh 'mvn test'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
