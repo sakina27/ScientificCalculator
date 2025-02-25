@@ -1,0 +1,11 @@
+---
+- name: Deploy Scientific Calculator
+  hosts: localhost
+  tasks:
+    - name: Pull Docker Image
+      docker_image:
+        name: "saki2726/scientific-calculator"
+        source: pull
+
+    - name: Run Docker Container
+      shell: docker run -it -d --name calculator saki2726/scientific-calculator
