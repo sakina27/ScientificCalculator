@@ -56,5 +56,11 @@ pipeline {
                 }
             }
         }
+
+        stage('Run GUI') {
+            steps {
+                sh 'docker exec -it calculator java -jar /app/app.jar'
+            }
+        }
     }
 }
