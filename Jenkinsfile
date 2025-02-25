@@ -59,7 +59,11 @@ pipeline {
 
         stage('Run GUI') {
             steps {
-                sh 'docker exec -it calculator java -jar /app/app.jar'
+                script {
+                    sh 'docker ps -q --filter "name=calculator" | xargs -r docker stop'
+                    sh 'docker ps -aq --filter "name=calculator" | xargs -r docker rm'
+                    sh 'docker run -d -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --name calculator saki2726/scientific-calculator'
+                }
             }
         }
     }
