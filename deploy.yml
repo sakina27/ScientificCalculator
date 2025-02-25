@@ -2,8 +2,15 @@
 - name: Deploy Scientific Calculator GUI
   hosts: localhost
   tasks:
-    - name: Allow Docker to access X11
+    - name: Set DISPLAY variable (only if running locally)
+      shell: echo $DISPLAY
+      register: display_check
+      changed_when: false
+
+    - name: Allow Docker to access X11 (only if DISPLAY is set)
       shell: xhost +local:docker
+      when: display_check.stdout != ""
+      ignore_errors: yes
 
     - name: Pull latest Docker image
       docker_image:
@@ -21,6 +28,7 @@
     - name: Run Docker container with GUI support
       shell: |
         docker run -it -d \
+          --restart unless-stopped \
           -e DISPLAY=$DISPLAY \
           -v /tmp/.X11-unix:/tmp/.X11-unix \
           --name calculator \
