@@ -7,5 +7,13 @@
         name: "saki2726/scientific-calculator"
         source: pull
 
+    - name: Stop existing container
+      command: docker stop scientific-calculator
+      ignore_errors: yes
+
+    - name: Remove existing container
+      command: docker rm scientific-calculator
+      ignore_errors: yes
+
     - name: Run Docker Container
       shell: docker run -it -d --name calculator saki2726/scientific-calculator
