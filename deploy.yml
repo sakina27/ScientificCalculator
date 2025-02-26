@@ -2,34 +2,29 @@
 - name: Deploy Scientific Calculator GUI
   hosts: localhost
   tasks:
-    - name: Set DISPLAY variable (only if running locally)
-      shell: echo $DISPLAY
-      register: display_check
-      changed_when: false
-
-    - name: Allow Docker to access X11 (only if DISPLAY is set)
+    - name: Allow Docker to access X11
       shell: xhost +local:docker
-      when: display_check.stdout != ""
-      ignore_errors: yes
 
     - name: Pull latest Docker image
       docker_image:
         name: "saki2726/scientific-calculator"
         source: pull
 
-    - name: Stop existing container (if running)
-      shell: docker ps -q --filter "name=calculator" | xargs -r docker stop
+    - name: Stop and remove any existing container
+      shell: |
+        docker ps -q --filter "name=calculator" | xargs -r docker stop
+        docker ps -aq --filter "name=calculator" | xargs -r docker rm
       ignore_errors: yes
 
-    - name: Remove existing container (if exists)
-      shell: docker ps -aq --filter "name=calculator" | xargs -r docker rm
-      ignore_errors: yes
-
-    - name: Run Docker container with GUI support
+    - name: Run Docker container with X11 GUI support
       shell: |
         docker run -it -d \
           --restart unless-stopped \
           -e DISPLAY=$DISPLAY \
+          -e XAUTHORITY=$XAUTHORITY \
           -v /tmp/.X11-unix:/tmp/.X11-unix \
           --name calculator \
           saki2726/scientific-calculator
+
+    - name: Start Scientific Calculator GUI
+      shell: docker exec -it calculator java -jar /app/app.jar
